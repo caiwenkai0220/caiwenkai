@@ -1,13 +1,10 @@
-import configparser
-import os
 import pytest
 from web_ui_framework.pages.auth.login_page import LoginPage
 from web_ui_framework.pages.home.home_page import HomePage
+from web_ui_framework.configs.config import config
 
-config = configparser.ConfigParser()
-config.read(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),'configs','config.ini'))
-username = config['test_env']['username']
-password = config['test_env']['password']
+username = config.username
+password = config.password
 
 # 显式声明继承父级conftest
 pytest_plugins = ["tests.conftest"]  # 关键行

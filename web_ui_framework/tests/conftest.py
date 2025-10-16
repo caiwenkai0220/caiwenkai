@@ -1,16 +1,13 @@
 import pytest
-import configparser
-import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from web_ui_framework.utils.logger import logger
+from web_ui_framework.configs.config import config
 
-# 读取配置文件
-config = configparser.ConfigParser()
-config.read(os.path.join(os.path.dirname(os.path.dirname(__file__)),'configs','config.ini'))
-browser = config['default']['browser'].lower()
-implicit_wait = int(config['default']['implicit_wait'])
+
+browser = config.browser
+implicit_wait = config.implicit_wait
 
 
 @pytest.fixture(scope='session')

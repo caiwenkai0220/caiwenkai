@@ -1,20 +1,16 @@
 import logging
 import os
-import configparser
-from datetime import datetime
+from web_ui_framework.configs.config import config
 
 # 确保日志目录存在,如果没有就创建目录
 log_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)),'logs')
 if not os.path.exists(log_dir):
     os.makedirs(log_dir)
 
-# 读取配置文件
-config = configparser.ConfigParser()
-config.read(os.path.join(os.path.dirname(os.path.dirname(__file__)),'configs','config.ini'))
 
 # 日志配置
-log_level = config['logging']['log_level']
-log_file = os.path.join(log_dir,config['logging']['log_file'])
+log_level = config.log_level
+log_file = config.log_file
 
 
 # 设置日志格式

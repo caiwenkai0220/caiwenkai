@@ -2,10 +2,8 @@ from selenium.common import NoAlertPresentException, NoSuchElementException
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import configparser
-import os
 from web_ui_framework.utils.logger import logger
-
+from web_ui_framework.configs.config import config
 
 # 创建基础页面类
 class BasePage:
@@ -14,11 +12,7 @@ class BasePage:
     # 设置实例属性，driver
     def __init__(self, driver):
         self.driver = driver  # 设置实例属性driver，所有子类共享
-        self.config = configparser.ConfigParser()
-        # 读取配置文件
-        self.config.read(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'configs', 'config.ini'))
-        # 优先使用显示等待，更加灵活, 会动态轮询直到元素出现或超时
-        self.explicit_wait = int(self.config['default']['explicit_wait'])
+        self.explicit_wait = config.explicit_wait
 
     # 打开地址
     def open(self, url):

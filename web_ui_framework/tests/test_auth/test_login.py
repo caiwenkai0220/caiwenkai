@@ -7,12 +7,11 @@ import pytest
 from pages.home.home_page import HomePage
 from web_ui_framework.pages.auth.login_page import LoginPage
 from web_ui_framework.utils.take_screenshot import take_screenshot
+from web_ui_framework.configs.config import config
 
 # 读取配置文件
-config = configparser.ConfigParser()
-config.read(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),'configs','config.ini'))
-username = config['test_env']['username']
-password = config['test_env']['password']
+username = config.username
+password = config.password
 
 
 class TestLogin:
