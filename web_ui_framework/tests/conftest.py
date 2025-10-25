@@ -1,7 +1,6 @@
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
 from web_ui_framework.utils.logger import logger
 from web_ui_framework.configs.config import config
 
@@ -15,9 +14,9 @@ def driver():
     """全局driver 整个测试会话只初始化一次"""
     logger.info(f'初始化浏览器：{browser}')
     if browser == 'chrome':
-        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-    elif browser == 'safari':
-        driver = webdriver.Safari()
+        service = ChromeService(
+            executable_path="/Users/caiwenkai/My/PycharmProjects/chromedriver-mac-arm64/chromedriver")
+        driver = webdriver.Chrome(service=service)
     else:
         raise ValueError(f'不支持的浏览器：{browser}')
 
