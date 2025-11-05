@@ -12,10 +12,9 @@ pytest_plugins = ["tests.conftest"]  # 关键行
 @pytest.fixture(scope='package')
 def logged_in_session(driver):
     login_page = LoginPage(driver)
-    login_page.load()
     login_page.login(username,password)
 
-@pytest.fixture()
+@pytest.fixture
 def home_page(driver,logged_in_session):
     yield HomePage(driver)
 

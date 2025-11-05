@@ -31,7 +31,7 @@ def add_handler_if_not_exist(handler_type, handler_args, formatter):
             new_handler.setFormatter(formatter)
             new_handler.setLevel(getattr(logging, log_level.upper(), logging.INFO))
             logger.addHandler(new_handler)
-            print(f"已添加处理器：{type(new_handler).__name__}")  # 调试信息
+            # print(f"已添加处理器：{type(new_handler).__name__}")  # 调试信息
         except Exception as e:
             print(f"添加处理器失败：{e}")  # 捕获可能的异常
 

@@ -15,7 +15,7 @@ def driver():
     logger.info(f'初始化浏览器：{browser}')
     if browser == 'chrome':
         service = ChromeService(
-            executable_path="/Users/caiwenkai/My/PycharmProjects/chromedriver-mac-arm64/chromedriver")
+            executable_path="/Users/caiwenkai/My/PycharmProjects/PythonProject/chromedriver-mac-arm64/chromedriver")
         driver = webdriver.Chrome(service=service)
     else:
         raise ValueError(f'不支持的浏览器：{browser}')

@@ -32,6 +32,10 @@ class Config:
         return self.test_env.get("base_url", "http://127.0.0.1")
 
     @property
+    def port(self):
+        return self.test_env.get("port", "8234")
+
+    @property
     def username(self):
         return self.test_env.get("username", "byhy")
 

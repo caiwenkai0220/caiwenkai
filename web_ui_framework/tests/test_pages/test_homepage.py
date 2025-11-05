@@ -1,9 +1,27 @@
+import time
+import pytest
+from tests.test_pages.conftest import home_page
+from utils.logger import logger
 
+
+@pytest.fixture(autouse=True)
+def init_url(home_page):
+    home_page.navigate(home_page.home_page_url)
+    logger.info(f"已进入{home_page.home_page_url}页面")
 
 class TestHomePage:
 
+    def test_url(self,home_page):
+        assert home_page.get_url() == home_page.home_page_url
+
+
     def test_click_device_model(self,home_page):
         home_page.click_device_model()
-        assert home_page.get_url() == "http://127.0.0.1:8234/index.html#/devicemodel"
+        assert home_page.get_url() == f"{home_page.home_page_url}#/devicemodel"
+
+
+    def test_click_business_rules(self,home_page):
+        home_page.click_business_rules()
+        assert home_page.get_url() == f"{home_page.home_page_url}#/svcrule"
 
 

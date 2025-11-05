@@ -8,7 +8,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from web_ui_framework.utils.logger import logger
 from web_ui_framework.configs.config import config
 from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
 
 
 # 创建基础页面类
@@ -21,16 +20,29 @@ class BasePage:
         self.explicit_wait = config.explicit_wait
 
     # 打开地址
-    def open_page(self, url):
+    def navigate(self, url):
         """打开指定URL"""
         try:
+            if self.driver.current_url == url:
+                logger.info(f"当前页面url已是{url}，无需跳转")
+                return
             self.driver.get(url)
             WebDriverWait(self.driver, self.explicit_wait).until(
                 lambda driver: driver.execute_script("return document.readyState") == "complete"
             )
-            logger.info(f'打开页面：{url}')
+            logger.info(f'跳转到{url}页面')
         except TimeoutException:
             logger.warning(f"页面{url}加载超时")
+
+    def refresh(self):
+        self.driver.refresh()
+        try:
+            WebDriverWait(self.driver,self.explicit_wait).until(
+                lambda driver: driver.execute_script("return document.readyState") == "complete"
+            )
+            logger.info("刷新页面完成")
+        except TimeoutException:
+            logger.warning("刷新页面超时")
 
     # 显示等待查找元素，直到找到或者超时
     def find_element(self, locator):
@@ -42,7 +54,7 @@ class BasePage:
         except TimeoutException:
             logger.error(f'超时，未找到元素：{locator}')  # 记录日志
             # 继续抛出异常，防止程序在有异常的情况下继续执行
-            raise Exception(f"元素定位超时: {locator}")  from None  # 关键：用 from None 屏蔽原始堆栈
+            raise Exception(f"元素定位超时: {locator}")  from None
 
     # 显示等待查找元素，直到找到或者超时
     def find_elements(self, locator):
@@ -74,11 +86,11 @@ class BasePage:
             if 'parent_element' not in locals():
                 logger.error(f'超时，未找到父元素：{parent_locator}')
                 # 继续抛出异常，防止程序在有异常的情况下继续执行
-                raise Exception(f'超时，未找到父元素：{parent_locator}')  from None  # 用 from None 屏蔽原始堆栈
+                raise Exception(f'超时，未找到父元素：{parent_locator}')  from None
             else:
                 logger.error(f'超时，未找到子元素：{child_locator}')
                 # 继续抛出异常，防止程序在有异常的情况下继续执行
-                raise Exception(f'超时，未找到子元素：{child_locator}')  from None  # 用 from None 屏蔽原始堆栈
+                raise Exception(f'超时，未找到子元素：{child_locator}')  from None
 
     def find_elements_in_parent_locator(self, parent_locator, child_locator):
         """在父元素下查找多个子元素"""
@@ -96,11 +108,11 @@ class BasePage:
             if 'parent_element' not in locals():
                 logger.error(f'超时，未找到父元素：{parent_locator}')
                 # 继续抛出异常，防止程序在有异常的情况下继续执行
-                raise Exception(f'超时，未找到父元素：{parent_locator}')  from None  # 用 from None 屏蔽原始堆栈
+                raise Exception(f'超时，未找到父元素：{parent_locator}')  from None
             else:
                 logger.error(f'超时，未找到子元素：{child_locator}')
                 # 继续抛出异常，防止程序在有异常的情况下继续执行
-                raise Exception(f'超时，未找到子元素：{child_locator}')  from None  # 用 from None 屏蔽原始堆栈
+                raise Exception(f'超时，未找到子元素：{child_locator}')  from None
 
     # 点击元素
     def click(self, locator, wait_for_url_change=None, wait_for_element=None, timeout=None):
@@ -121,14 +133,11 @@ class BasePage:
                 EC.element_to_be_clickable(locator)
             )
 
-            # 2. 记录点击前的URL（用于判断是否跳转）
-            url_before_clicked = self.driver.current_url
-
-            # 3. 执行点击
+            # 2. 执行点击
             element.click()
             logger.debug(f"点击元素: {locator}")
 
-            # 4. 根据参数进行不同的等待
+            # 3. 根据参数进行不同的等待
             if wait_for_url_change:
                 # 等待URL变化
                 WebDriverWait(self.driver, timeout).until(
@@ -142,14 +151,6 @@ class BasePage:
                     EC.presence_of_element_located(wait_for_element)
                 )
                 logger.debug(f"目标元素已加载: {wait_for_element}")
-
-            else:
-                # 默认等待：如果URL发生变化，等待页面加载
-                if self.driver.current_url != url_before_clicked:
-                    WebDriverWait(self.driver, timeout).until(
-                        lambda driver: driver.execute_script("return document.readyState") == "complete"
-                    )
-                    logger.debug("页面加载完成")
 
         except TimeoutException:
             if wait_for_url_change:
@@ -198,10 +199,20 @@ class BasePage:
             WebDriverWait(self.driver, 0.5).until(  # 较短超时，因为元素已存在
                 EC.visibility_of_element_located(locator)
             )
-            logger.info(f'元素 {locator} 存在且可见')
+            logger.info(f'正常，元素 {locator} 存在且可见')
             return True
         except TimeoutException:
-            logger.info(f'元素 {locator} 存在但不可见')
+            logger.info(f'异常，元素 {locator} 存在但不可见')
+            return False
+
+    def is_not_displayed(self,locator,timeout=None):
+        timeout = timeout or self.explicit_wait
+        try:
+            WebDriverWait(self.driver,timeout).until(EC.invisibility_of_element_located(locator))
+            logger.info(f"正常，元素 {locator} 已不可见")
+            return True
+        except TimeoutException:
+            logger.error(f"异常，元素 {locator} 仍可见")
             return False
 
     # 选择下拉框元素
@@ -235,7 +246,7 @@ class BasePage:
         try:
             alert = self.wait_alert(timeout)  # 接收wait_alert返回的弹窗对象
             alert.accept()  # 直接使用返回的alert对象，避免重复switch
-            logger.info('点击确认弹窗')
+            logger.debug('点击确认弹窗')
         except Exception as e:
             logger.error(f'点击确认弹窗失败: {str(e)}')
             raise  # 重新抛出异常，让调用者处理
@@ -282,7 +293,7 @@ class BasePage:
 
 
 if __name__ == '__main__':
-    service = ChromeService(executable_path="/Users/caiwenkai/My/PycharmProjects/chromedriver-mac-arm64/chromedriver")
+    service = ChromeService(executable_path="/Users/caiwenkai/My/PycharmProjects/PythonProject/chromedriver-mac-arm64/chromedriver")
     driver = webdriver.Chrome(service=service)
     basepage = BasePage(driver)
     button = (By.CSS_SELECTOR, "#loginBtns")

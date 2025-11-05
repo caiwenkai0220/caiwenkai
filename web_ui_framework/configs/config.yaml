@@ -5,6 +5,7 @@ default:
 
 test_env:
   base_url: http://127.0.0.1
+  port: 8234
   username: byhy
   password: sdfsdf
 

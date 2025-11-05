@@ -1,12 +1,10 @@
-import time
 from selenium.webdriver.common.by import By
 from web_ui_framework.pages.base_pages import BasePage
 from web_ui_framework.utils.logger import logger
 from web_ui_framework.configs.config import config
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-from web_ui_framework.pages.home.home_page import HomePage
+# from selenium import webdriver
+# from selenium.webdriver.chrome.service import Service as ChromeService
+# from web_ui_framework.pages.home.home_page import HomePage
 
 # 创建登陆页面对象
 class LoginPage(BasePage):
@@ -21,7 +19,7 @@ class LoginPage(BasePage):
 
     def open_login_page(self):
         # 打开登陆页面
-        self.open_page(self.login_url)
+        self.navigate(self.login_url)
 
     # 简化方法命名
     def input_username(self, username):
@@ -34,13 +32,13 @@ class LoginPage(BasePage):
 
     # 点击登陆按钮
     def click_login_button(self):
-        self.click(self.login_button,wait_for_url_change="index.html")
+        self.click(self.login_button)
         logger.info("点击登录")
 
     # 完整登陆流程
     def login(self, username, password, expected_success=True):
         self.open_login_page()
-        logger.info(f'开始登录，用户名：{username}')
+        logger.info(f'开始登录')
         self.input_username(username)
         self.input_password(password)
         self.click_login_button()
@@ -85,10 +83,10 @@ class LoginPage(BasePage):
 
 
 
-if __name__ == '__main__':
-    service = ChromeService(executable_path="/Users/caiwenkai/My/PycharmProjects/chromedriver-mac-arm64/chromedriver")
-    driver = webdriver.Chrome(service=service)
-    login_page = LoginPage(driver)
-    home_page = HomePage(driver)
-    login_page.login("byhy","sdfsdf")
-    home_page.click_business_rules()
+# if __name__ == '__main__':
+#     service = ChromeService(executable_path="/Users/caiwenkai/My/PycharmProjects/chromedriver-mac-arm64/chromedriver")
+#     driver = webdriver.Chrome(service=service)
+#     login_page = LoginPage(driver)
+#     home_page = HomePage(driver)
+#     login_page.login("byhy","sdfsdf")
+#     home_page.click_business_rules()
