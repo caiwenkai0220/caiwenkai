@@ -8,7 +8,7 @@ from web_ui_framework.configs.config import config
 browser = config.browser
 implicit_wait = config.implicit_wait
 
-
+# 通用fixture
 @pytest.fixture(scope='session')
 def driver():
     """全局driver 整个测试会话只初始化一次"""

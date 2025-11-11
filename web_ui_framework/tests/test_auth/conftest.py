@@ -2,9 +2,7 @@ import pytest
 from selenium.common import NoAlertPresentException
 from web_ui_framework.utils.logger import logger
 
-# 显式声明继承父级conftest
-pytest_plugins = ["tests.conftest"]  # 关键行
-
+# pytest_plugins = ["tests.conftest"]
 # 私有函数，如果出现弹窗就关闭
 def _dismiss_alert(driver):
     try:

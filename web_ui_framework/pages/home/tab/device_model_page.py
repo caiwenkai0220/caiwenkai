@@ -1,12 +1,12 @@
 import time
 
-from selenium.common import NoSuchElementException, TimeoutException
+from selenium.common import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.command import Command
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from configs.config import config
-from tests.test_pages.test_model_page.conftest import device_model_page
 from utils.logger import logger
 from web_ui_framework.pages.base_pages import BasePage
 
@@ -76,13 +76,13 @@ class DeviceModelPage(BasePage):
         logger.info("点击确定按钮")
 
     # 添加一个设备型号
-    def add_one_device_model(self, class_text, model_text, description_text):
+    def add_one_device_model(self, class_text, model_text, description_text,timeout=None):
         self.click_add_button()
         self.select_device_class(class_text)
         self.input_device_model(model_text)
         self.input_model_description(description_text)
         self.click_confirm_button()
-        if self.wait_model_appear(model_text):
+        if self.wait_model_appear(model_text,timeout):
             logger.info(f"添加设备型号 {model_text} 成功")
         else:
             logger.error(f"添加设备型号 {model_text} 失败")
@@ -112,7 +112,8 @@ class DeviceModelPage(BasePage):
         raise Exception(f"未找到设备型号: {model}")
 
     # 删除一条设备型号
-    def delete_one_device_model(self, model):  # model值为要删除的设备型号
+    def delete_one_device_model(self, model, timeout=None):  # model值为要删除的设备型号
+        timeout = timeout or self.explicit_wait
         model_selector = (By.XPATH, f'//span[@class="field-value"][text()="{model}"]')
         delete_selector = (By.XPATH,
                            f'//span[@class="field-value"][text()="{model}"]/../../..//span[@class="btn-no-border"][1]')
@@ -121,15 +122,20 @@ class DeviceModelPage(BasePage):
             logger.info(f"点击删除按钮：{delete_selector}")
             self.accept_alert()
             logger.info(f"点击弹窗确认")
-            self.wait_model_disappear(model)
-            logger.info(f'删除设备型号 {model} 成功')
+            if self.wait_model_disappear(model,timeout):
+                logger.info(f'删除设备型号 {model} 成功')
+                return True
+            else:
+                logger.warning(f'删除设备型号 {model} 失败')
+                return False
 
         else:
             logger.error(f'删除失败，未找到设备型号：{model}')
             raise Exception(f'删除失败，未找到设备型号：{model}')
 
     # 修改设备型号的信息
-    def modify_one_device_model(self, model, new_class, new_model, new_desc):
+    def modify_one_device_model(self, model, new_class, new_model, new_desc,timeout=None):
+        timeout = timeout or self.explicit_wait
         model_selector = (By.XPATH, f'//span[@class="field-value"][text()="{model}"]')
         modify_selector = (By.XPATH,
                            f'//span[@class="field-value"][text()="{model}"]/../../..//span[@class="btn-no-border"][2]')
@@ -144,7 +150,7 @@ class DeviceModelPage(BasePage):
             logger.info(f"输入设备描述：{new_desc}")
             self.click(self.edit_confirm_button)
             logger.info(f"点击确认按钮：{self.edit_confirm_button}")
-            self.wait_model_disappear(model)
+            self.wait_model_disappear(model,timeout)
             self.wait_model_appear(new_model)
             logger.info(f'修改设备型号 {model} 成功')
 
@@ -152,20 +158,33 @@ class DeviceModelPage(BasePage):
             logger.error(f'修改失败，未找到设备型号：{model}')
             raise Exception(f'修改失败，未找到设备型号：{model}')
 
-    def wait_model_appear(self, model_text):
-        model_selector = (By.XPATH,
-                          f'//div[@class="result-list-item-info"]//div[@class="field"][2]//span[text()="{model_text}"]')
-        self.find_element(model_selector)
-        logger.info(f"设备型号 {model_text} 已出现在列表中")
-        return True
-
-    def wait_model_disappear(self, model_text):
+    def wait_model_appear(self, model_text,timeout=None):
         try:
+            timeout = timeout or self.explicit_wait
             model_selector = (By.XPATH,
                               f'//div[@class="result-list-item-info"]//div[@class="field"][2]//span[text()="{model_text}"]')
-            WebDriverWait(self.driver, self.explicit_wait).until(EC.invisibility_of_element_located(model_selector))
+            self.find_element(model_selector,timeout)
+            logger.info(f"设备型号 {model_text} 已出现在列表中")
+            return True
+        except TimeoutException:
+            logger.warning(f"设备型号 {model_text} 未出现在列表中")
+            return False
+
+    def wait_model_disappear(self, model_text, timeout=None):
+        try:
+            timeout = timeout or self.explicit_wait
+            model_selector = (By.XPATH,
+                              f'//div[@class="result-list-item-info"]//div[@class="field"][2]//span[text()="{model_text}"]')
+            # 临时将隐式等待设置为0
+            self.driver.implicitly_wait(0.1)
+            WebDriverWait(self.driver, timeout, poll_frequency=0.1).until(
+                lambda driver: len(driver.find_elements(*model_selector)) == 0
+            )
+            # 恢复原来的隐式等待
+            self.driver.implicitly_wait(config.implicit_wait)
+
             logger.info(f"设备型号 {model_text} 已不在列表中")
             return True
         except TimeoutException:
-            logger.error(f"设备型号 {model_text} 还在列表中")
+            logger.warning(f"设备型号 {model_text} 还在列表中")
             return False

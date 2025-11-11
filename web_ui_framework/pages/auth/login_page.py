@@ -49,9 +49,9 @@ class LoginPage(BasePage):
             try:
                 # 等待首页元素出现，确认登录成功
                 if self.is_logged_in():
-                    logger.info(f'登录成功，用户名：{username}')
+                    logger.info(f'符合预期，登录成功，用户名：{username}')
             except Exception as e:
-                logger.error(f'登录失败，未跳转到首页：{str(e)}')
+                logger.error(f'不符合预期，登录失败，未跳转到首页：{str(e)}')
                 raise Exception('登录失败') from None
         else:
             # 预期登录失败，等待弹窗错误提示

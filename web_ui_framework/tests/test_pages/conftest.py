@@ -7,7 +7,7 @@ username = config.username
 password = config.password
 
 # 显式声明继承父级conftest
-pytest_plugins = ["tests.conftest"]  # 关键行
+# pytest_plugins = ["tests.conftest"]  # 关键行
 
 @pytest.fixture(scope='package')
 def logged_in_session(driver):

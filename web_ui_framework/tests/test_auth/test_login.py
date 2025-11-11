@@ -1,8 +1,4 @@
-import configparser
-import os
-from time import sleep
 
-import pytest
 
 from pages.home.home_page import HomePage
 from web_ui_framework.pages.auth.login_page import LoginPage

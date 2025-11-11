@@ -1,6 +1,4 @@
-import time
 import pytest
-from tests.test_pages.conftest import home_page
 from utils.logger import logger
 
 

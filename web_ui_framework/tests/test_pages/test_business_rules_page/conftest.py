@@ -1,6 +1,8 @@
 import pytest
 
-pytest_plugins = ["tests.test_pages.conftest"]
+
+# 显式声明继承父级conftest
+# pytest_plugins = ["tests.test_pages.conftest"]
 
 @pytest.fixture
 def business_rules_page(home_page):

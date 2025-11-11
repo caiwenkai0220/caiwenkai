@@ -45,21 +45,23 @@ class BasePage:
             logger.warning("刷新页面超时")
 
     # 显示等待查找元素，直到找到或者超时
-    def find_element(self, locator):
+    def find_element(self, locator, timeout=None):
         """查找单个元素，使用显式等待"""
         try:
-            element = WebDriverWait(self.driver, self.explicit_wait).until(EC.presence_of_element_located(locator))
+            timeout = timeout or self.explicit_wait
+            element = WebDriverWait(self.driver, timeout).until(EC.presence_of_element_located(locator))
             logger.debug(f'找到元素：{locator}')
             return element
         except TimeoutException:
             logger.error(f'超时，未找到元素：{locator}')  # 记录日志
             # 继续抛出异常，防止程序在有异常的情况下继续执行
-            raise Exception(f"元素定位超时: {locator}")  from None
+            raise TimeoutException(f"元素定位超时: {locator}")  from None
 
     # 显示等待查找元素，直到找到或者超时
-    def find_elements(self, locator):
+    def find_elements(self, locator, timeout=None):
         try:
-            elements = WebDriverWait(self.driver, self.explicit_wait).until(
+            timeout = timeout or self.explicit_wait
+            elements = WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_all_elements_located(locator))
             logger.debug(f'找到元素列表：{locator}')
             return elements
@@ -68,16 +70,17 @@ class BasePage:
             # 继续抛出异常，防止程序在有异常的情况下继续执行
             raise Exception(f"元素定位超时: {locator}")  from None  # 用 from None 屏蔽原始堆栈，避免终端打印过多信息
 
-    def find_element_in_parent_locator(self, parent_locator, child_locator):
+    def find_element_in_parent_locator(self, parent_locator, child_locator,timeout=None):
         """在父元素下查找子元素"""
         try:
             # 显示等待父元素
-            parent_element = WebDriverWait(self.driver, self.explicit_wait).until(
+            timeout = timeout or self.explicit_wait
+            parent_element = WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_element_located(parent_locator))
             logger.debug(f'找到父元素：{parent_locator}')
 
             # 显示等待子元素
-            child_element = WebDriverWait(parent_element, self.explicit_wait).until(
+            child_element = WebDriverWait(parent_element, timeout).until(
                 EC.presence_of_element_located(child_locator))
             logger.debug(f'在父元素{parent_locator}下找到子元素：{child_locator}')
             return child_element
@@ -92,14 +95,15 @@ class BasePage:
                 # 继续抛出异常，防止程序在有异常的情况下继续执行
                 raise Exception(f'超时，未找到子元素：{child_locator}')  from None
 
-    def find_elements_in_parent_locator(self, parent_locator, child_locator):
+    def find_elements_in_parent_locator(self, parent_locator, child_locator,timeout=None):
         """在父元素下查找多个子元素"""
         try:
-            parent_element = WebDriverWait(self.driver, self.explicit_wait).until(
+            timeout = timeout or self.explicit_wait
+            parent_element = WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_element_located(parent_locator))
             logger.debug(f'找到父元素：{parent_locator}')
 
-            child_elements = WebDriverWait(parent_element, self.explicit_wait).until(
+            child_elements = WebDriverWait(parent_element, timeout).until(
                 EC.presence_of_all_elements_located(child_locator))
             logger.debug(f'在父元素{parent_locator}下找到子元素列表：{child_locator}')
             return child_elements
