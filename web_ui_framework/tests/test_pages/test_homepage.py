@@ -1,6 +1,6 @@
 import pytest
 from utils.logger import logger
-
+import allure
 
 @pytest.fixture(autouse=True)
 def init_url(home_page):
