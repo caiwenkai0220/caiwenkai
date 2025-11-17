@@ -19,8 +19,8 @@ def run():
         "-v",  # 详细输出
         "-s",  # 显示打印信息
         "--alluredir", allure_results_dir,  # 正确：Allure原始结果目录
-        "--html", pytest_html_report,  # 正确：pytest-html报告路径（放在reports_dir下）
-        "--self-contained-html",  # 将CSS嵌入HTML，不生成外部文件
+        #"--html", pytest_html_report,  # 正确：pytest-html报告路径（放在reports_dir下）
+        #"--self-contained-html",  # 将CSS嵌入HTML，不生成外部文件
         # "-k", "test_login",  # 可选：筛选用例
     ]
 
