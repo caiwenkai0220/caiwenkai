@@ -21,6 +21,8 @@ def run():
         # "--alluredir", allure_results_dir,  # 正确：Allure原始结果目录
         "--html", pytest_html_report,  # 正确：pytest-html报告路径（放在reports_dir下）
         "--self-contained-html",  # 将CSS嵌入HTML，不生成外部文件
+        "--capture=sys",  # 捕获标准输出/错误
+        "--show-capture=all",  # 在报告中显示捕获的输出
         # "-k", "test_login",  # 可选：筛选用例
     ]
 
