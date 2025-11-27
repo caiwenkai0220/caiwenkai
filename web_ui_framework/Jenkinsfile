@@ -11,8 +11,8 @@ pipeline {
         PYTHON_313 = '/Library/Frameworks/Python.framework/Versions/3.13/bin/python3'
         PIP_313 = '/Library/Frameworks/Python.framework/Versions/3.13/bin/pip3'
         // 测试脚本和 Allure 结果目录路径
-        TEST_SCRIPT = 'web_ui_framework/run.py'
-        ALLURE_RESULTS = 'web_ui_framework/reports/allure-results'
+        TEST_SCRIPT = 'run.py'
+        ALLURE_RESULTS = 'reports/allure-results'
         PIP_MIRROR = 'https://pypi.tuna.tsinghua.edu.cn/simple'
         // 核心：Allure 的 bin 目录绝对路径（从日志中提取）
         ALLURE_BIN = '/Users/caiwenkai/.jenkins/tools/ru.yandex.qatools.allure.jenkins.tools.AllureCommandlineInstallation/Allure_2.35.1/bin'
