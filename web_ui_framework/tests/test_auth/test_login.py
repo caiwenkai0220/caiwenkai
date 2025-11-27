@@ -1,9 +1,9 @@
 import allure
 
 from pages.home.home_page import HomePage
-from web_ui_framework.pages.auth.login_page import LoginPage
+from pages.auth.login_page import LoginPage
 
-from web_ui_framework.configs.config import config
+from configs.config import config
 
 # 读取配置文件
 username = config.username

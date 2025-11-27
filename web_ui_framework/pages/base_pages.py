@@ -5,8 +5,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from web_ui_framework.utils.logger import logger
-from web_ui_framework.configs.config import config
+from utils.logger import logger
+from configs.config import config
 from selenium.webdriver.chrome.service import Service as ChromeService
 
 
@@ -297,7 +297,7 @@ class BasePage:
 
 
 if __name__ == '__main__':
-    service = ChromeService(executable_path="/Users/caiwenkai/My/PycharmProjects/PythonProject/chromedriver-mac-arm64/chromedriver")
+    service = ChromeService(executable_path="/chromedriver-mac-arm64/chromedriver")
     driver = webdriver.Chrome(service=service)
     basepage = BasePage(driver)
     button = (By.CSS_SELECTOR, "#loginBtns")

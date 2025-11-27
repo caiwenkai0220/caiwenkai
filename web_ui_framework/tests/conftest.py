@@ -1,8 +1,10 @@
+import os.path
+
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
-from web_ui_framework.utils.logger import logger
-from web_ui_framework.configs.config import config
+from utils.logger import logger
+from configs.config import config
 
 
 browser = config.browser
@@ -13,9 +15,10 @@ implicit_wait = config.implicit_wait
 def driver():
     """全局driver 整个测试会话只初始化一次"""
     logger.info(f'初始化浏览器：{browser}')
+    base_dir = os.path.dirname(os.path.dirname(__file__))
     if browser == 'chrome':
         service = ChromeService(
-            executable_path="/Users/caiwenkai/My/PycharmProjects/PythonProject/chromedriver-mac-arm64/chromedriver")
+            executable_path=os.path.join(base_dir,"chromedriver-mac-arm64/chromedriver"))
         driver = webdriver.Chrome(service=service)
     else:
         raise ValueError(f'不支持的浏览器：{browser}')

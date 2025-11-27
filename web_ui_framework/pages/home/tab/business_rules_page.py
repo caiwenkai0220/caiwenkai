@@ -1,4 +1,4 @@
-from web_ui_framework.pages.base_pages import BasePage
+from pages.base_pages import BasePage
 
 
 class BusinessRulesPage(BasePage):

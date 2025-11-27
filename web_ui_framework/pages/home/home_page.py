@@ -5,12 +5,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.chrome.service import Service as ChromeService
 
-from web_ui_framework.pages.auth.login_page import LoginPage
-from web_ui_framework.pages.base_pages import BasePage
-from web_ui_framework.pages.home.tab.business_rules_page import BusinessRulesPage
-from web_ui_framework.pages.home.tab.device_model_page import DeviceModelPage
-from web_ui_framework.utils.logger import logger
-from web_ui_framework.configs.config import config
+from pages.auth.login_page import LoginPage
+from pages.base_pages import BasePage
+from pages.home.tab.business_rules_page import BusinessRulesPage
+from pages.home.tab.device_model_page import DeviceModelPage
+from utils.logger import logger
+from configs.config import config
 
 class HomePage(BasePage):
     device_model_menu = (By.CSS_SELECTOR, '.sub-nav-bar a[href="#/devicemodel"]')  # 设备型号
@@ -57,7 +57,7 @@ class HomePage(BasePage):
         return BusinessRulesPage(self.driver)  # 点击业务规则菜单，同时创建业务规则tab页对象，并返回
 
 if __name__ == '__main__':
-    service = ChromeService(executable_path="/Users/caiwenkai/My/PycharmProjects/PythonProject/chromedriver-mac-arm64/chromedriver")
+    service = ChromeService(executable_path="/chromedriver-mac-arm64/chromedriver")
     driver = webdriver.Chrome(service=service)
     login_page = LoginPage(driver)
     login_page.login("byhy", "sdfsdf")

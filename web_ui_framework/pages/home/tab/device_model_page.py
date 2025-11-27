@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from configs.config import config
 from utils.logger import logger
-from web_ui_framework.pages.base_pages import BasePage
+from pages.base_pages import BasePage
 
 
 class DeviceModelPage(BasePage):

@@ -1,6 +1,6 @@
 import logging
 import os
-from web_ui_framework.configs.config import config
+from configs.config import config
 
 # 确保日志目录存在
 log_dir = os.path.join((os.path.dirname(os.path.dirname(__file__))), 'logs')

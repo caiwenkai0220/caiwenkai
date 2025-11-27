@@ -1,6 +1,6 @@
 import pytest
 from selenium.common import NoAlertPresentException
-from web_ui_framework.utils.logger import logger
+from utils.logger import logger
 
 # pytest_plugins = ["tests.conftest"]
 # 私有函数，如果出现弹窗就关闭

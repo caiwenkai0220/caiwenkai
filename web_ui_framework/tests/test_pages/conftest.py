@@ -1,7 +1,7 @@
 import pytest
-from web_ui_framework.pages.auth.login_page import LoginPage
-from web_ui_framework.pages.home.home_page import HomePage
-from web_ui_framework.configs.config import config
+from pages.auth.login_page import LoginPage
+from pages.home.home_page import HomePage
+from configs.config import config
 
 username = config.username
 password = config.password

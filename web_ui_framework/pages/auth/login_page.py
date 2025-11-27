@@ -1,10 +1,10 @@
 from selenium.webdriver.common.by import By
-from web_ui_framework.pages.base_pages import BasePage
-from web_ui_framework.utils.logger import logger
-from web_ui_framework.configs.config import config
+from pages.base_pages import BasePage
+from utils.logger import logger
+from configs.config import config
 # from selenium import webdriver
 # from selenium.webdriver.chrome.service import Service as ChromeService
-# from web_ui_framework.pages.home.home_page import HomePage
+# from pages.home.home_page import HomePage
 
 # 创建登陆页面对象
 class LoginPage(BasePage):
