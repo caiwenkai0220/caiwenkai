@@ -31,8 +31,8 @@ def run():
 
     # 生成 Allure 最终报告（从allure_results_dir读取原始数据）
     allure_report_dir = os.path.join(reports_dir, "allure-report")  # Allure HTML报告目录
-    os.system(f"allure generate {allure_results_dir} -o {allure_report_dir} --clean")
-    print(f"Allure报告已生成：{allure_report_dir}")
+    # os.system(f"allure generate {allure_results_dir} -o {allure_report_dir} --clean")
+    # print(f"Allure报告已生成：{allure_report_dir}")
     # print(f"pytest-html报告已生成：{pytest_html_report}")
 
 
