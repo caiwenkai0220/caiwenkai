@@ -7,6 +7,7 @@ def run():
     base_dir = os.path.dirname(__file__)
     reports_dir = os.path.join(base_dir, "reports")  # 存放最终报告（allure/html）
     allure_results_dir = os.path.join(reports_dir, "allure-results")  # Allure原始结果（JSON）
+    test_cases_dir = os.path.join(base_dir, "tests")  # 关键：拼接 tests/ 目录，路径为 web_ui_framework/tests/
     # pytest_html_report = os.path.join(reports_dir, "pytest_report.html")  # pytest-html报告
 
     # 确保目录存在
@@ -15,7 +16,7 @@ def run():
 
     # pytest 命令参数（修正路径和目录分工）
     args = [
-        "tests/",  # 用例目录
+        test_cases_dir,  # 用例目录
         "-v",  # 详细输出
         "-s",  # 显示打印信息
         "--alluredir", allure_results_dir,  # 正确：Allure原始结果目录
