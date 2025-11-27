@@ -1,44 +1,43 @@
 pipeline {
     agent any
     tools {
-        allure 'Allure 2.35.1' // 与你全局配置的 Allure 版本一致
+        allure 'Allure 2.35.1' // 与全局配置的 Allure 名称一致
     }
     triggers {
-        cron('0 7 * * *')
+        cron('0 2 * * *')
     }
     environment {
-        // 核心：指定 Python 3.13 的绝对路径
+        // Python 3.13 绝对路径
         PYTHON_313 = '/Library/Frameworks/Python.framework/Versions/3.13/bin/python3'
-        PIP_313 = '/Library/Frameworks/Python.framework/Versions/3.13/bin/pip3' // 对应版本的 pip
-        // 测试脚本路径（根据你的项目结构调整）
+        PIP_313 = '/Library/Frameworks/Python.framework/Versions/3.13/bin/pip3'
+        // 测试脚本和 Allure 结果目录路径
         TEST_SCRIPT = 'web_ui_framework/run.py'
-        // Allure 结果目录路径
         ALLURE_RESULTS = 'web_ui_framework/reports/allure-results'
-        // 国内镜像源
         PIP_MIRROR = 'https://pypi.tuna.tsinghua.edu.cn/simple'
-        // Python 3.13 的用户 bin 目录（后续调用 pytest 用）
-        PYTHON_313_BIN = '/Library/Frameworks/Python.framework/Versions/3.13/bin'
+        // 核心：Allure 的 bin 目录绝对路径（从日志中提取）
+        ALLURE_BIN = '/Users/caiwenkai/.jenkins/tools/ru.yandex.qatools.allure.jenkins.tools.AllureCommandlineInstallation/Allure_2.35.1/bin'
     }
     stages {
         stage('环境准备') {
             steps {
-                echo '========== 配置 Python 3.13 环境 =========='
-                // 用 Python 3.13 的 pip 升级并安装依赖
-                sh "${PIP_313} install --upgrade pip -i ${PIP_MIRROR}"
-                sh "${PIP_313} install pytest allure-pytest -i ${PIP_MIRROR}"
+                // 将 Allure 的 bin 目录加入 PATH
+                withEnv(["PATH+ALLURE=${ALLURE_BIN}"]) {
+                    echo '========== 配置 Python 3.13 环境 =========='
+                    sh "${PIP_313} install --upgrade pip -i ${PIP_MIRROR}"
+                    sh "${PIP_313} install pytest allure-pytest -i ${PIP_MIRROR}"
 
-                echo '========== 检查 Python 3.13 环境版本 =========='
-                sh "${PYTHON_313} --version" // 验证是 3.13
-                sh "${PYTHON_313} -m pytest --version" // 用模块方式调用 pytest，避免路径问题
-                sh 'allure --version'
+                    echo '========== 检查环境版本 =========='
+                    sh "${PYTHON_313} --version"
+                    sh "${PYTHON_313} -m pytest --version"
+                    sh 'allure --version' // 此时能正常识别命令
+                }
             }
         }
         stage('执行测试用例') {
             steps {
+                // 执行测试脚本无需 Allure 命令，直接调用 Python 3.13 即可
                 echo '========== 开始执行 Python 测试脚本 =========='
-                // 用 Python 3.13 执行测试脚本
                 sh "${PYTHON_313} ${TEST_SCRIPT}"
-
                 // 检查 Allure 结果目录是否生成
                 sh "ls -l ${ALLURE_RESULTS}/ || echo 'Allure 结果目录为空，请检查测试脚本'"
             }
