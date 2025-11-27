@@ -16,9 +16,9 @@ pipeline {
     // 构建环境变量（可自定义路径、依赖等）
     environment {
         // 测试脚本名称（与你的实际脚本一致）
-        TEST_SCRIPT = 'run.py'
+        TEST_SCRIPT = 'web_ui_framework/run.py'
         // Allure 原始结果目录（与你 Python 代码中的路径一致）
-        ALLURE_RESULTS = 'reports/allure-results'
+        ALLURE_RESULTS = 'web_ui_framework/reports/allure-results'
         // Python 依赖安装镜像（国内源加速）
         PIP_MIRROR = 'https://pypi.tuna.tsinghua.edu.cn/simple'
     }
