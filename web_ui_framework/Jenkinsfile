@@ -1,63 +1,52 @@
-// 声明式 Pipeline 语法（Jenkins 推荐）
 pipeline {
-    // 选择任意可用的 Jenkins 节点执行
     agent any
-
-    // 引用全局工具配置的 Allure 命令行（名称必须与全局配置一致）
     tools {
-        allure 'Allure 2.35.1'
+        allure 'Allure 2.35.1' // 与你全局配置的 Allure 版本一致
     }
-
-    // 定时执行规则：每天凌晨 2 点执行（可根据需求修改 Cron 表达式）
     triggers {
-        cron('0 8 * * *')
+        cron('0 7 * * *')
     }
-
-    // 构建环境变量（可自定义路径、依赖等）
     environment {
-        // 测试脚本名称（与你的实际脚本一致）
+        // 核心：指定 Python 3.13 的绝对路径
+        PYTHON_313 = '/Library/Frameworks/Python.framework/Versions/3.13/bin/python3'
+        PIP_313 = '/Library/Frameworks/Python.framework/Versions/3.13/bin/pip3' // 对应版本的 pip
+        // 测试脚本路径（根据你的项目结构调整）
         TEST_SCRIPT = 'web_ui_framework/run.py'
-        // Allure 原始结果目录（与你 Python 代码中的路径一致）
+        // Allure 结果目录路径
         ALLURE_RESULTS = 'web_ui_framework/reports/allure-results'
-        // Python 依赖安装镜像（国内源加速）
+        // 国内镜像源
         PIP_MIRROR = 'https://pypi.tuna.tsinghua.edu.cn/simple'
+        // Python 3.13 的用户 bin 目录（后续调用 pytest 用）
+        PYTHON_313_BIN = '/Library/Frameworks/Python.framework/Versions/3.13/bin'
     }
-
-    // 流水线阶段
     stages {
         stage('环境准备') {
             steps {
-                echo '========== 安装 Python 依赖包 =========='
-                // 升级 pip 并安装依赖（allure-pytest 是生成 Allure 结果的核心）
-                sh "python3 -m pip install --upgrade pip -i ${PIP_MIRROR}"
-                sh "pip3 install pytest allure-pytest -i ${PIP_MIRROR}"
+                echo '========== 配置 Python 3.13 环境 =========='
+                // 用 Python 3.13 的 pip 升级并安装依赖
+                sh "${PIP_313} install --upgrade pip -i ${PIP_MIRROR}"
+                sh "${PIP_313} install pytest allure-pytest -i ${PIP_MIRROR}"
 
-                // 检查环境是否正常
-                echo '========== 检查环境版本 =========='
-                sh 'python3 --version'
-                sh 'pytest --version'
+                echo '========== 检查 Python 3.13 环境版本 =========='
+                sh "${PYTHON_313} --version" // 验证是 3.13
+                sh "${PYTHON_313} -m pytest --version" // 用模块方式调用 pytest，避免路径问题
                 sh 'allure --version'
             }
         }
-
         stage('执行测试用例') {
             steps {
                 echo '========== 开始执行 Python 测试脚本 =========='
-                // 执行测试脚本（若脚本需要虚拟环境，需先激活）
-                sh "python3 ${TEST_SCRIPT}"
+                // 用 Python 3.13 执行测试脚本
+                sh "${PYTHON_313} ${TEST_SCRIPT}"
 
-                // 验证 Allure 原始结果是否生成
-                echo '========== 检查 Allure 原始结果目录 =========='
+                // 检查 Allure 结果目录是否生成
                 sh "ls -l ${ALLURE_RESULTS}/ || echo 'Allure 结果目录为空，请检查测试脚本'"
             }
         }
     }
-
-    // 构建后操作（无论成功/失败都执行）
     post {
         always {
             echo '========== 生成 Allure 测试报告 =========='
-            // 基于 Allure 原始结果生成报告
             allure(
                 includeProperties: false,
                 jdk: '',
@@ -65,9 +54,6 @@ pipeline {
                 reportBuildPolicy: 'ALWAYS',
                 results: [[path: "${ALLURE_RESULTS}"]]
             )
-        }
-        success {
-            echo '========== 测试执行成功！=========='
         }
         failure {
             echo '========== 测试执行失败，请检查用例！=========='
