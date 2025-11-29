@@ -4,7 +4,7 @@ pipeline {
         allure 'Allure 2.35.1' // 与全局配置的 Allure 名称一致
     }
     triggers {
-        cron('0 2 * * *')
+        cron('0 2 * * *') // 每天凌晨2点执行
     }
     environment {
         // Python 3.13 绝对路径
@@ -16,6 +16,10 @@ pipeline {
         PIP_MIRROR = 'https://pypi.tuna.tsinghua.edu.cn/simple'
         // 核心：Allure 的 bin 目录绝对路径（从日志中提取）
         ALLURE_BIN = '/Users/caiwenkai/.jenkins/tools/ru.yandex.qatools.allure.jenkins.tools.AllureCommandlineInstallation/Allure_2.35.1/bin'
+        // 邮件配置常量
+        EMAIL_TO = 'caiwenkai0220@163.com' // 收件人邮箱
+        EMAIL_FROM = 'caiwenkai0220@163.com' // 发件人邮箱（必须与SMTP认证用户名一致）
+        ALLURE_REPORT_URL = "${env.BUILD_URL}allure/" // Allure报告访问链接
     }
     stages {
         stage('环境准备') {
@@ -52,6 +56,23 @@ pipeline {
                 properties: [],
                 reportBuildPolicy: 'ALWAYS',
                 results: [[path: "${ALLURE_RESULTS}"]]
+            )
+            // 核心：添加邮件发送逻辑，无论测试成功/失败都发送
+            echo '========== 发送测试报告邮件 =========='
+            emailext(
+                subject: "【Jenkins测试报告】${env.JOB_NAME} - 构建#${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
+                body: """
+                    <h3>测试任务执行结果：<font color="${currentBuild.currentResult == 'SUCCESS' ? 'green' : 'red'}">${currentBuild.currentResult}</font></h3>
+                    <p>任务名称：${env.JOB_NAME}</p>
+                    <p>构建编号：${env.BUILD_NUMBER}</p>
+                    <p>构建时间：${new Date()}</p>
+                    <p>Allure测试报告链接：<a href="${ALLURE_REPORT_URL}">${ALLURE_REPORT_URL}</a></p>
+                    <p>任务详情链接：<a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                """,
+                to: "${EMAIL_TO}", // 收件人
+                from: "${EMAIL_FROM}", // 发件人（关键：与SMTP认证用户名一致）
+                mimeType: 'text/html', // 邮件格式为HTML，支持样式和链接
+                replyTo: "${EMAIL_FROM}" // 回复邮箱
             )
         }
         failure {
