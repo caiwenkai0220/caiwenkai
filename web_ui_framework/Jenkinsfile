@@ -24,7 +24,7 @@ pipeline {
                 withEnv(["PATH+ALLURE=${ALLURE_BIN}"]) {
                     echo '========== 配置 Python 3.13 环境 =========='
                     sh "${PIP_313} install --upgrade pip -i ${PIP_MIRROR}"
-                    sh "${PIP_313} install pytest allure-pytest selenium -i ${PIP_MIRROR}"
+                    sh "${PIP_313} install pytest allure-pytest selenium pyyaml -i ${PIP_MIRROR}"
 
                     echo '========== 检查环境版本 =========='
                     sh "${PYTHON_313} --version"
