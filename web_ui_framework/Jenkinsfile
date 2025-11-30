@@ -20,9 +20,7 @@ pipeline {
         EMAIL_TO = 'caiwenkai0220@163.com' // 收件人邮箱
         EMAIL_FROM = 'caiwenkai0220@163.com' // 发件人邮箱（必须与SMTP认证用户名一致）
         // 原配置（仅本机可用）
-        //ALLURE_REPORT_URL = "${env.BUILD_URL}allure/" // Allure报告访问链接
-        // 新配置（同一网络下手机/电脑都可用）
-        ALLURE_REPORT_URL = "http://192.168.1.64:8080/job/Python-Allure-Test-Pipeline/${env.BUILD_NUMBER}/allure/"
+        ALLURE_REPORT_URL = "${env.BUILD_URL}allure/" // Allure报告访问链接
     }
     stages {
         stage('环境准备') {
