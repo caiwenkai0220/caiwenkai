@@ -4,7 +4,7 @@ pipeline {
         allure 'Allure 2.35.1' // 与全局配置的 Allure 名称一致
     }
     triggers {
-        cron('0 7 * * *') // 每天凌晨2点执行
+        cron('0 7 * * *') // 每天早上7点执行
     }
     environment {
         // Python 3.13 绝对路径
@@ -19,7 +19,10 @@ pipeline {
         // 邮件配置常量
         EMAIL_TO = 'caiwenkai0220@163.com' // 收件人邮箱
         EMAIL_FROM = 'caiwenkai0220@163.com' // 发件人邮箱（必须与SMTP认证用户名一致）
-        ALLURE_REPORT_URL = "${env.BUILD_URL}allure/" // Allure报告访问链接
+        // 原配置（仅本机可用）
+        //ALLURE_REPORT_URL = "${env.BUILD_URL}allure/" // Allure报告访问链接
+        // 新配置（同一网络下手机/电脑都可用）
+        ALLURE_REPORT_URL = "http://192.168.1.64:8080/job/Python-Allure-Test-Pipeline/${env.BUILD_NUMBER}/allure/"
     }
     stages {
         stage('环境准备') {
