@@ -17,7 +17,6 @@ class TestLogin:
     @allure.description("前置条件：用户未登录；执行步骤：输入正确账号正确密码登录；预期结果：应可以登录成功")  # 用例步骤
     @allure.severity(allure.severity_level.BLOCKER)  # 优先级，阻塞级别，相当于P0
     @allure.tag("冒烟测试", "主流程")  # 自定义标签，支持多维度筛选
-    @allure.link("https://docs.example.com/login", "登录功能文档")  # 关联功能文档，方便查看用例对应的需求 / 设计文档
     @allure.testcase("https://jira.example.com/browse/TEST-001", "用例ID：TEST-001")  # 关联Jira用例
     def test_successful_login_01(self,driver):
         login_page = LoginPage(driver)
@@ -77,7 +76,7 @@ class TestLogin:
     @allure.description("前置条件：用户未登录；执行步骤：输入错误账号，错误密码登录；预期结果：应弹窗提示 用户名不存在")
     @allure.severity(allure.severity_level.NORMAL)  # 普通级别，相当于P2
     @allure.tag("非主流程")
-    @allure.testcase("https://jira.example.com/browse/TEST-004", "用例ID：TEST-004")
+    @allure.testcase("https://jira.example.com/browse/TEST-005", "用例ID：TEST-005")
     def test_failed_login_05(self,driver):
         login_page = LoginPage(driver)
         with allure.step(f"1、输入错误用户名：byh，错误密码：sdfsd，点击登录"):
@@ -91,7 +90,7 @@ class TestLogin:
     @allure.description("前置条件：用户未登录；执行步骤：未输入用户名，输入密码登录；预期结果：应弹窗提示 请输入用户名")
     @allure.severity(allure.severity_level.NORMAL)  # 普通级别，相当于P2
     @allure.tag("非主流程")
-    @allure.testcase("https://jira.example.com/browse/TEST-005", "用例ID：TEST-005")
+    @allure.testcase("https://jira.example.com/browse/TEST-006", "用例ID：TEST-006")
     def test_failed_login_06(self,driver):
         login_page = LoginPage(driver)
         with allure.step(f"1、不输入用户名，输入密码：{password}，点击登录"):
@@ -105,7 +104,7 @@ class TestLogin:
     @allure.description("前置条件：用户未登录；执行步骤：输入用户名，不输入密码登录；预期结果：应弹窗提示 请输入密码")
     @allure.severity(allure.severity_level.NORMAL)  # 普通级别，相当于P2
     @allure.tag("非主流程")
-    @allure.testcase("https://jira.example.com/browse/TEST-006", "用例ID：TEST-006")
+    @allure.testcase("https://jira.example.com/browse/TEST-007", "用例ID：TEST-007")
     def test_failed_login_07(self,driver):
         login_page = LoginPage(driver)
         with allure.step(f"1、输入用户名: {username}，不输入密码，点击登录"):
