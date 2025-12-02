@@ -23,6 +23,20 @@ pipeline {
         ALLURE_REPORT_URL = "${env.BUILD_URL}allure/" // Allure报告访问链接
     }
     stages {
+        stages {
+        // 新增：构建前清理历史文件（放在最前面）
+        stage('清理历史文件') {
+            steps {
+                echo '========== 清理 Allure 历史结果和报告 =========='
+                // 清理 allure-results 目录下的所有文件（保留目录）
+                sh 'rm -rf ${ALLURE_RESULTS}/*'
+                // 清理上一次生成的 allure-report 目录（整个删除，下次会重新生成）
+                sh 'rm -rf allure-report'
+                // 可选：清理 Jenkins 工作空间的其他临时文件（如测试日志、缓存等）
+                sh 'rm -rf *.log .pytest_cache'
+                }
+            }
+        }
         stage('环境准备') {
             steps {
                 // 将 Allure 的 bin 目录加入 PATH
