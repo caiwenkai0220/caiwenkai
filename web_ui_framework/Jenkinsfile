@@ -4,7 +4,7 @@ pipeline {
         allure 'Allure 2.35.1' // 与全局配置的 Allure 名称一致
     }
     triggers {
-        cron('0 7 * * *') // 每天早上8点执行
+        cron('0 7 * * *') // 每天早上7点执行
     }
     environment {
         // Python 3.13 绝对路径

@@ -30,7 +30,7 @@ class TestLogin:
     @allure.title("退出登录")  # 自定义标题
     @allure.description("前置条件：用户已登录；执行步骤：点击退出登录；预期结果：应退出到登录界面")
     @allure.severity(allure.severity_level.BLOCKER)  # 阻塞级别，相当于P0
-    @allure.tag("冒烟测试","核心功能")
+    @allure.tag("冒烟测试","主流程")
     # @allure.testcase("https://jira.example.com/browse/TEST-002", "用例ID：TEST-002")
     def test_logout_02(self,driver):
         login_page = LoginPage(driver)
